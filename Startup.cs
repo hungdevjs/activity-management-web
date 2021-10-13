@@ -1,10 +1,18 @@
+using System;
+using System.Text;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+
+using ActivityManagementWeb.Data;
+using ActivityManagementWeb.Services;
 
 namespace ActivityManagementWeb
 {
@@ -17,6 +25,7 @@ namespace ActivityManagementWeb
 
         public IConfiguration Configuration { get; }
 
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -28,10 +37,27 @@ namespace ActivityManagementWeb
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            // add scoped here
+            services.AddScoped<IAccountService, AccountService>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context)
         {
             if (env.IsDevelopment())
             {
@@ -50,6 +76,8 @@ namespace ActivityManagementWeb
 
             app.UseRouting();
 
+            app.UseCors();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -66,6 +94,8 @@ namespace ActivityManagementWeb
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+            SeedData.Initialize(context);
         }
     }
 }
