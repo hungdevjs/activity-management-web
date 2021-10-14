@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using ActivityManagementWeb.Services;
 using ActivityManagementWeb.Dtos;
-
+using ActivityManagementWeb.Helpers;
 namespace ActivityManagementWeb.Controllers
 {
     [ApiController]
@@ -27,16 +25,35 @@ namespace ActivityManagementWeb.Controllers
         [Route("login")]
         public async Task<object> Login([FromBody] LoginRequestDto model)
         {
-            try 
-            {
-              var data = await _service.Login(model);
-              return Ok(data);
-            }
-            catch (Exception ex)
-            {
-              _logger.LogError(ex.Message);
-              return Unauthorized(ex.Message);
-            }
+          try 
+          {
+            var data = await _service.Login(model);
+            return Ok(data);
+          }
+          catch (Exception ex)
+          {
+            _logger.LogError(ex.Message);
+            return Unauthorized(ex.Message);
+          }
+        }
+
+        [HttpGet]
+        [Route("me")]
+        public async Task<object> GetInfo()
+        {
+          try 
+          {
+            var userId = Utils.GetUserId(HttpContext);
+            if (userId == default) throw new Exception("Bad request");
+
+            var data = await _service.GetInfo(userId);
+            return Ok(data);
+          }
+          catch(Exception ex)
+          {
+            _logger.LogError(ex.Message);
+            return BadRequest(ex.Message);
+          }
         }
     }
 }

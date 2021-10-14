@@ -12,6 +12,7 @@ namespace ActivityManagementWeb.Services
   public interface IAccountService
   {
     Task<LoginResponseDto> Login(LoginRequestDto model);
+    Task<StudentDto> GetInfo(int userId);
   }
 
   public class AccountService : IAccountService
@@ -50,6 +51,22 @@ namespace ActivityManagementWeb.Services
         Token = token,
         Data = studentDto
       };
+    }
+
+    public async Task<StudentDto> GetInfo(int userId)
+    {
+      var student = await _context.Students.FirstOrDefaultAsync(i => i.Id == userId);
+      if (student == null) throw new Exception("Bad request");
+
+      var studentDto = new StudentDto
+      {
+        Id = student.Id,
+        Email = student.Email,
+        Name = $"{student.FirstName} {student.LastName}",
+        ClassName = student.ClassName
+      };
+
+      return studentDto;
     }
   }
 }
