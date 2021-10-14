@@ -1,22 +1,38 @@
-import React, { Component } from 'react';
-import { Route } from 'react-router';
-import { Layout } from './components/Layout';
-import { Home } from './components/Home';
-import { FetchData } from './components/FetchData';
-import { Counter } from './components/Counter';
+import React, { Component } from "react"
+import { ToastContainer } from "react-toastify"
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 
-import './custom.css'
+import "react-toastify/dist/ReactToastify.css"
+import "./custom.css"
+
+import Login from "./pages/Login"
+import MainLayout from "./layout/MainLayout"
+import Loading from "./components/Loading"
+import AppContextProvider from "./contexts/app.context"
 
 export default class App extends Component {
-  static displayName = App.name;
+  static displayName = App.name
 
-  render () {
+  render() {
     return (
-      <Layout>
-        <Route exact path='/' component={Home} />
-        <Route path='/counter' component={Counter} />
-        <Route path='/fetch-data' component={FetchData} />
-      </Layout>
-    );
+      <AppContextProvider>
+        <ToastContainer
+          position="top-right"
+          autoClose={2500}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          draggable
+        />
+        <Loading />
+        <Router>
+          <Switch>
+            <Route path="/login" exact component={Login} />
+            <Route path="/" component={MainLayout} />
+          </Switch>
+        </Router>
+      </AppContextProvider>
+    )
   }
 }

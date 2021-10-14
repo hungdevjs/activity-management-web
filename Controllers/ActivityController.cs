@@ -80,7 +80,7 @@ namespace ActivityManagementWeb.Controllers
 
     [HttpPut]
     [Route("{activityId}")]
-    public async Task<object> Attendance(int activityId)
+    public async Task<object> AttendanceActivity(int activityId)
     {
       try 
       {
