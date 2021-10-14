@@ -12,5 +12,6 @@ namespace ActivityManagementWeb.Models
         public DateTime AttendanceTime { get; set; }
         public int Score { get; set; }
         public string Status { get; set; }
+        public bool HasScoreChecked { get; set; }
     }
 }

@@ -126,7 +126,7 @@ namespace ActivityManagementWeb.Data
                     Semester = semester1,
                     Creator = teacher2
                 };
-                context.Activites.AddRange(activity1, activity2);
+                context.Activities.AddRange(activity1, activity2);
 
                 // create attachment
                 var attachment1 = new Attachment

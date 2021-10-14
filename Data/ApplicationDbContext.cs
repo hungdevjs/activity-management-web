@@ -7,7 +7,7 @@ namespace ActivityManagementWeb.Data
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
-        public DbSet<Activity> Activites { get; set; }
+        public DbSet<Activity> Activities { get; set; }
         public DbSet<ActivityType> ActivityTypes { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Manager> Managers { get; set; }

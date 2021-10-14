@@ -1,11 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 using ActivityManagementWeb.Dtos;
 using ActivityManagementWeb.Data;
-using ActivityManagementWeb.Helpers;
 
 namespace ActivityManagementWeb.Services
 {
@@ -18,11 +16,9 @@ namespace ActivityManagementWeb.Services
   public class StudentService : IStudentService
   {
     private readonly ApplicationDbContext _context;
-    private readonly IConfiguration _config;
-    public StudentService(ApplicationDbContext context, IConfiguration config)
+    public StudentService(ApplicationDbContext context)
     {
       _context = context;
-      _config = config;
     }
 
     public async Task<StudentProfileDto> GetProfile(int userId)
@@ -66,7 +62,8 @@ namespace ActivityManagementWeb.Services
       {
         Id = student.Id,
         Email = student.Email,
-        Name = $"{student.FirstName} {student.LastName}"
+        Name = $"{student.FirstName} {student.LastName}",
+        ClassName = student.ClassName
       };
     }
   }

@@ -41,6 +41,8 @@ namespace ActivityManagementWeb
             // add scoped here
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IStudentService, StudentService>();
+            services.AddScoped<ICommonService, CommonService>();
+            services.AddScoped<IActivityService, ActivityService>();
 
             services.AddCors(options =>
             {
