@@ -11,5 +11,6 @@ namespace ActivityManagementWeb.Models
         public DateTime SignUpTime { get; set; }
         public DateTime AttendanceTime { get; set; }
         public int Score { get; set; }
+        public bool IsApproved { get; set; }
     }
 }
