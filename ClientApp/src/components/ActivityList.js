@@ -3,7 +3,30 @@ import { ListGroup, ListGroupItem, Collapse } from "reactstrap"
 import { BiRightArrow, BiDownArrow } from "react-icons/bi"
 import moment from "moment"
 
-import { DATE_FORMAT } from "../utils/constants"
+import { DATE_FORMAT, ACTIVITY_STATUS } from "../utils/constants"
+
+const generateTextColor = (status) => {
+  if (status === ACTIVITY_STATUS.Absence) return "#e74c3c"
+  if (status === ACTIVITY_STATUS.Attendance) return "#2ecc71"
+  if (status === ACTIVITY_STATUS.Pending) return "#f1c40f"
+  if (status === ACTIVITY_STATUS.Approved) return "#3498db"
+  if (status === ACTIVITY_STATUS.Cancelled) return "#34495e"
+}
+
+const generateText = (activity) => {
+  switch (activity.status) {
+    case ACTIVITY_STATUS.Absence:
+      return `-${activity.minusPoint} point(s)`
+    case ACTIVITY_STATUS.Attendance:
+      return `+${activity.plusPoint} point(s)`
+    case ACTIVITY_STATUS.Approved:
+      return "Approved"
+    case ACTIVITY_STATUS.Pending:
+      return "Pending"
+    case ACTIVITY_STATUS.Cancelled:
+      return "Cancelled"
+  }
+}
 
 const ActivityList = ({ activities, isList }) => {
   const [openingIds, setOpeningIds] = useState([])
@@ -30,6 +53,11 @@ const ActivityList = ({ activities, isList }) => {
                 isList && "flex-column"
               } align-items-center justify-content-between`}
             >
+              {isList && (
+                <b style={{ color: generateTextColor(activity.status) }}>
+                  {generateText(activity)}
+                </b>
+              )}{" "}
               <b>{activity.name}</b>
               <div>
                 {moment(activity.startTime).format(DATE_FORMAT)} -{" "}
