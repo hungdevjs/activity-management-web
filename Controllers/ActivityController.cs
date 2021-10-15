@@ -99,7 +99,7 @@ namespace ActivityManagementWeb.Controllers
 
     [HttpGet]
     [Route("score")]
-    public async Task<object> GetScore(int activityId)
+    public async Task<object> GetScore()
     {
       try 
       {
@@ -107,6 +107,22 @@ namespace ActivityManagementWeb.Controllers
         if (userId == default) throw new Exception("Bad request");
 
         var data = await _service.GetScore(userId);
+        return Ok(data);
+      }
+      catch(Exception ex)
+      {
+        _logger.LogError(ex.Message);
+        return BadRequest(ex.Message);
+      }
+    }
+
+    [HttpGet]
+    [Route("semester")]
+    public async Task<object> GetSemester()
+    {
+      try 
+      {
+        var data = await _service.GetSemester();
         return Ok(data);
       }
       catch(Exception ex)

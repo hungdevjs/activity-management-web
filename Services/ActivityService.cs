@@ -18,6 +18,7 @@ namespace ActivityManagementWeb.Services
     Task SignUpActivity(int userId, int activityId);
     Task AttendanceActivity(int userId, int activityId);
     Task<int> GetScore(int userId);
+    Task<SemesterDto> GetSemester();
   }
 
   public class ActivityService : IActivityService
@@ -198,6 +199,18 @@ namespace ActivityManagementWeb.Services
       }
 
       return studentPoint.Point;
+    }
+
+    public async Task<SemesterDto> GetSemester()
+    {
+      var semester = await _commonService.GetCurrentSemester();
+      return new SemesterDto
+      {
+        Name = semester.Name,
+        StartTime = semester.StartTime,
+        EndTime = semester.EndTime,
+        YearName = semester.Year.Name
+      };
     }
 
     private ActivityDto[] FormatActivity(List<StudentActivity> activities)
