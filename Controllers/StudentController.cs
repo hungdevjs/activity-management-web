@@ -41,7 +41,7 @@ namespace ActivityManagementWeb.Controllers
       }
     }
 
-    [HttpPost]
+    [HttpPut]
     [Route("me")]
     public async Task<object> UpdateProfile([FromBody] StudentUpdateProfileRequest model)
     {
