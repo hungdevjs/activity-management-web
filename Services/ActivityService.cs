@@ -69,20 +69,36 @@ namespace ActivityManagementWeb.Services
       var activeActivities = await _context.Activities
         .Include(i => i.ActivityType)
         .Include(i => i.Creator)
-        .Where(i => i.SemesterId == semester.Id && i.SignUpStartTime <= now && now <= i.SignUpEndTime)
+        .Where(i => i.SemesterId == semester.Id && now <= i.SignUpEndTime)
         .ToListAsync();
 
-      var signedActivitiyIds = await _context.StudentActivities
+      var signedActivities = await _context.StudentActivities
         .Where(i => i.StudentId == userId && i.Activity.SemesterId == semester.Id)
-        .Select(i => i.ActivityId)
         .ToListAsync();
+
+      var signedActivitiyIds = signedActivities.Select(i => i.ActivityId).ToList();
+      var attendanceActivityIds = signedActivities
+        .Where(i => i.AttendanceTime != null && i.AttendanceTime > DateTime.MinValue)
+        .Select(i => i.ActivityId)
+        .ToList();
 
       var result = new List<ActivityDto>();
       foreach (var activity in activeActivities)
       {
-        var status = signedActivitiyIds.Contains(activity.Id)
-          ? "Signed"
-          : "NotSigned";
+        var status = "";
+        if (attendanceActivityIds.Contains(activity.Id)) 
+        {
+          status = "Attendance";
+        } 
+        else if (signedActivitiyIds.Contains(activity.Id)) 
+        {
+          status = signedActivities.FirstOrDefault(i => i.ActivityId == activity.Id).Status;
+        } 
+        else 
+        {
+          status = "NotSigned";
+        }
+
         var data = new ActivityDto
         {
           Id = activity.Id,
@@ -139,6 +155,7 @@ namespace ActivityManagementWeb.Services
       if (studentActivity == default) throw new Exception("Activity doesn't exist or closed attendancing");
 
       studentActivity.AttendanceTime = now;
+      studentActivity.Status = Constants.ATTENDANCE;
       studentActivity.HasScoreChecked = true;
       var studentPoint = await _context.StudentPoints.FirstOrDefaultAsync(i => i.StudentId == userId && i.SemesterId == semester.Id);
       if (studentPoint == default)
@@ -153,7 +170,7 @@ namespace ActivityManagementWeb.Services
       } 
       else 
       {
-        studentPoint.Point += studentActivity.Activity.ActivityType.PlusPoint;
+        studentPoint.Point = studentPoint.Point + studentActivity.Activity.ActivityType.PlusPoint;
       }
       await _context.SaveChangesAsync();
     }
@@ -164,7 +181,7 @@ namespace ActivityManagementWeb.Services
       var semester = await _commonService.GetCurrentSemester();
       var studentAbsenceActivities = await _context.StudentActivities
         .Include(i => i.Activity).ThenInclude(i => i.ActivityType)
-        .Where(i => i.Status == Constants.APPROVED && !i.HasScoreChecked && (i.AttendanceTime == null || i.AttendanceTime == DateTime.MinValue) && i.Activity.StartTime < now)
+        .Where(i => i.Status == Constants.APPROVED && !i.HasScoreChecked && (i.AttendanceTime == null || i.AttendanceTime == DateTime.MinValue) && i.Activity.EndTime < now)
         .ToListAsync();
 
       var minusPoint = 0;
@@ -172,6 +189,7 @@ namespace ActivityManagementWeb.Services
       {
         minusPoint += studentAbsenceActivity.Activity.ActivityType.MinusPoint;
         studentAbsenceActivity.HasScoreChecked = true;
+        studentAbsenceActivity.Status = Constants.ABSENCE;
       }
 
       var hasChanges = false;
@@ -189,7 +207,7 @@ namespace ActivityManagementWeb.Services
       }
       else if (minusPoint > 0)
       {
-        studentPoint.Point -= minusPoint;
+        studentPoint.Point = studentPoint.Point - minusPoint;
         hasChanges = true;
       }
 
@@ -244,22 +262,26 @@ namespace ActivityManagementWeb.Services
         {
           status = Constants.PENDING;
         } 
-        else 
+        else if (activity.Status == Constants.ATTENDANCE)
+        {
+          status = Constants.ATTENDANCE;
+        }
+        else
         {
           if (now > activity.Activity.EndTime) 
           {
             if (activity.AttendanceTime == null || activity.AttendanceTime == DateTime.MinValue)
             {
-              status = "Absence";
+              status = Constants.ABSENCE;
             } 
             else
             {
-              status = "Attendance";
+              status = Constants.ATTENDANCE;
             }
           } 
           else
           {
-            status = "Approved";
+            status = Constants.APPROVED;
           }
         }
 

@@ -8,7 +8,13 @@ import Score from "../components/Score"
 import ActiveActivities from "../components/ActiveActivities"
 
 import { AppContext } from "../contexts/app.context"
-import { getSemester, getScore, getActiveActivities } from "../services/activityService"
+import {
+  getSemester,
+  getScore,
+  getActiveActivities,
+  signUpActivity,
+  attendanceActivity,
+} from "../services/activityService"
 import { getProfile } from "../services/studentService"
 
 const Dashboard = () => {
@@ -22,18 +28,19 @@ const Dashboard = () => {
     setLoading(true)
 
     try {
-      const [semesterRes, scoreRes, activeActivitiesRes, profileRes] = await Promise.all([
-        getSemester(),
-        getScore(),
-        getActiveActivities(),
-        getProfile()
-      ])
+      const [semesterRes, scoreRes, activeActivitiesRes, profileRes] =
+        await Promise.all([
+          getSemester(),
+          getScore(),
+          getActiveActivities(),
+          getProfile(),
+        ])
 
       setSemester(semesterRes.data)
       setScore(scoreRes.data)
       setActiveActivities(activeActivitiesRes.data)
       setProfile(profileRes.data)
-    } catch(err) {
+    } catch (err) {
       toast.error(err.message)
     }
 
@@ -44,16 +51,56 @@ const Dashboard = () => {
     getData()
   }, [])
 
-  return <Row>
-    <Col md={4}>
-      <Semester semester={semester} />
-      <Profile profile={profile} />
-    </Col>
-    <Col md={8}>
-      <Score score={score} />
-      <ActiveActivities activeActivities={activeActivities} />
-    </Col>
-  </Row>
+  const signUp = async (id) => {
+    setLoading(true)
+
+    try {
+      await signUpActivity(id)
+      const res = await getActiveActivities()
+      setActiveActivities(res.data)
+      toast.success("Signing up successfully!")
+    } catch (err) {
+      toast.error(err.message)
+    }
+
+    setLoading(false)
+  }
+
+  const attendance = async (id) => {
+    setLoading(true)
+
+    try {
+      await attendanceActivity(id)
+      const [activeActivitiesRes, scoreRes] = await Promise.all([
+        getActiveActivities(),
+        getScore(),
+      ])
+      setActiveActivities(activeActivitiesRes.data)
+      setScore(scoreRes.data)
+      toast.success("Attendance successfully!")
+    } catch (err) {
+      toast.error(err.message)
+    }
+
+    setLoading(false)
+  }
+
+  return (
+    <Row>
+      <Col md={4}>
+        <Semester semester={semester} />
+        <Profile profile={profile} />
+      </Col>
+      <Col md={8}>
+        <Score score={score} />
+        <ActiveActivities
+          activeActivities={activeActivities}
+          signUp={signUp}
+          attendance={attendance}
+        />
+      </Col>
+    </Row>
+  )
 }
 
 export default Dashboard

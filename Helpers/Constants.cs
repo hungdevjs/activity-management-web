@@ -11,5 +11,7 @@ namespace ActivityManagementWeb.Helpers
         public static string APPROVED = "Approved";
         public static string PENDING = "Pending";
         public static string CANCELLED = "Cancelled";
+        public static string ATTENDANCE = "Attendance";
+        public static string ABSENCE = "Absence";
     }
 }

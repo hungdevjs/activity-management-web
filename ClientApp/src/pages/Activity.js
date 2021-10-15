@@ -5,11 +5,7 @@ import { Row, Col, Card, CardHeader, CardBody } from "reactstrap"
 import ActivityList from "../components/ActivityList"
 
 import { AppContext } from "../contexts/app.context"
-import {
-  getActivities,
-  signUpActivity,
-  attendanceActivity,
-} from "../services/activityService"
+import { getActivities } from "../services/activityService"
 
 const Activity = () => {
   const { setLoading } = useContext(AppContext)

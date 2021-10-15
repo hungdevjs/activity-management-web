@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { ListGroup, ListGroupItem, Collapse } from "reactstrap"
+import { ListGroup, ListGroupItem, Collapse, Button } from "reactstrap"
 import { BiRightArrow, BiDownArrow } from "react-icons/bi"
 import moment from "moment"
 
@@ -20,15 +20,15 @@ const generateText = (activity) => {
     case ACTIVITY_STATUS.Attendance:
       return `+${activity.plusPoint} point(s)`
     case ACTIVITY_STATUS.Approved:
-      return "Approved"
+      return ACTIVITY_STATUS.Approved
     case ACTIVITY_STATUS.Pending:
-      return "Pending"
+      return ACTIVITY_STATUS.Pending
     case ACTIVITY_STATUS.Cancelled:
-      return "Cancelled"
+      return ACTIVITY_STATUS.Cancelled
   }
 }
 
-const ActivityList = ({ activities, isList }) => {
+const ActivityList = ({ activities, isList, signUp, attendance }) => {
   const [openingIds, setOpeningIds] = useState([])
 
   const toggle = (id) => {
@@ -41,6 +41,72 @@ const ActivityList = ({ activities, isList }) => {
   }
 
   const style = { maxHeight: isList ? "80vh" : "50vh" }
+
+  const generateButtons = (activity) => {
+    const now = new Date().getTime()
+    const startTime = new Date(activity.startTime).getTime()
+    const isActive = startTime < now
+
+    if (activity.status === ACTIVITY_STATUS.Attendance) {
+      return (
+        <p className="text-success mt-2">
+          <i>You have attendance for this activity!</i>
+        </p>
+      )
+    }
+
+    if (activity.status === ACTIVITY_STATUS.Approved) {
+      if (!isActive)
+        return (
+          <p className="text-success mt-2">
+            <i>Approved!</i>
+          </p>
+        )
+      return (
+        <Button
+          color="success"
+          className="mt-2"
+          size="sm"
+          onClick={() => attendance(activity.id)}
+        >
+          Attendance
+        </Button>
+      )
+    }
+
+    if (activity.status === ACTIVITY_STATUS.Pending) {
+      return (
+        <p className="text-success mt-2">
+          <i>Request pending!</i>
+        </p>
+      )
+    }
+
+    if (activity.status === ACTIVITY_STATUS.Cancelled) {
+      return (
+        <p className="text-danger mt-2">
+          <i>Cancelled!</i>
+        </p>
+      )
+    }
+
+    if (isActive)
+      return (
+        <p className="text-primary mt-2">
+          <i>In progress</i>
+        </p>
+      )
+    return (
+      <Button
+        color="success"
+        className="mt-2"
+        size="sm"
+        onClick={() => signUp(activity.id)}
+      >
+        Sign up
+      </Button>
+    )
+  }
 
   return (
     <ListGroup className="overflow-auto" style={style}>
@@ -91,6 +157,7 @@ const ActivityList = ({ activities, isList }) => {
                 {moment(activity.signUpStartTime).format(DATE_FORMAT)} -{" "}
                 {moment(activity.signUpEndTime).format(DATE_FORMAT)}
               </p>
+              {!isList && generateButtons(activity)}
             </Collapse>
           </ListGroupItem>
         )
