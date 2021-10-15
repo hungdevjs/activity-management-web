@@ -4,9 +4,9 @@ import Header from "./Header"
 
 const ContentWithHeader = ({ children }) => {
   return (
-    <div>
+    <div className="vh-100 d-flex flex-column">
       <Header />
-      <Container>{children}</Container>
+      <Container className="flex-grow-1">{children}</Container>
     </div>
   )
 }

@@ -10,4 +10,6 @@ export const signUpActivity = (id) => api.post(`${ACTIVITY_URL}/${id}`)
 
 export const attendanceActivity = (id) => api.put(`${ACTIVITY_URL}/${id}`)
 
-export const getScore = (id) => api.put(`${ACTIVITY_URL}/score`)
+export const getScore = () => api.get(`${ACTIVITY_URL}/score`)
+
+export const getSemester = () => api.get(`${ACTIVITY_URL}/semester`)

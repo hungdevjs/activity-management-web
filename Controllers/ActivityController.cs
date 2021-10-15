@@ -59,6 +59,41 @@ namespace ActivityManagementWeb.Controllers
       }
     }
 
+    [HttpGet]
+    [Route("score")]
+    public async Task<object> GetScore()
+    {
+      try 
+      {
+        var userId = Utils.GetUserId(HttpContext);
+        if (userId == default) throw new Exception("Bad request");
+
+        var data = await _service.GetScore(userId);
+        return Ok(data);
+      }
+      catch(Exception ex)
+      {
+        _logger.LogError(ex.Message);
+        return BadRequest(ex.Message);
+      }
+    }
+
+    [HttpGet]
+    [Route("semester")]
+    public async Task<object> GetSemester()
+    {
+      try 
+      {
+        var data = await _service.GetSemester();
+        return Ok(data);
+      }
+      catch(Exception ex)
+      {
+        _logger.LogError(ex.Message);
+        return BadRequest(ex.Message);
+      }
+    }
+
     [HttpPost]
     [Route("{activityId}")]
     public async Task<object> SignUpActivity(int activityId)
@@ -89,41 +124,6 @@ namespace ActivityManagementWeb.Controllers
 
         await _service.AttendanceActivity(userId, activityId);
         return Ok();
-      }
-      catch(Exception ex)
-      {
-        _logger.LogError(ex.Message);
-        return BadRequest(ex.Message);
-      }
-    }
-
-    [HttpGet]
-    [Route("score")]
-    public async Task<object> GetScore()
-    {
-      try 
-      {
-        var userId = Utils.GetUserId(HttpContext);
-        if (userId == default) throw new Exception("Bad request");
-
-        var data = await _service.GetScore(userId);
-        return Ok(data);
-      }
-      catch(Exception ex)
-      {
-        _logger.LogError(ex.Message);
-        return BadRequest(ex.Message);
-      }
-    }
-
-    [HttpGet]
-    [Route("semester")]
-    public async Task<object> GetSemester()
-    {
-      try 
-      {
-        var data = await _service.GetSemester();
-        return Ok(data);
       }
       catch(Exception ex)
       {
