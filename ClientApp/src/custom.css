@@ -34,7 +34,3 @@ html {
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 9999;
 }
-
-.list-activity {
-  max-height: 50vh
-}

@@ -52,7 +52,7 @@ const Header = () => {
               </NavItem>
               <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/activity">
-                  Activity
+                  Your activities
                 </NavLink>
               </NavItem>
               <NavItem>
