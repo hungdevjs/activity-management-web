@@ -75,11 +75,11 @@ namespace ActivityManagementWeb.Controllers
 
         [HttpPost]
         [Route("verify-forget-password")]
-        public object VerifyForgetPasswordRequest([FromBody] ForgetPasswordConfirmDto model)
+        public async Task<object> VerifyForgetPasswordRequest([FromBody] ForgetPasswordConfirmDto model)
         {
           try 
           {
-            _service.VerifyForgetPasswordRequest(model);
+            await _service.VerifyForgetPasswordRequest(model);
             return Ok();
           }
           catch (Exception ex)

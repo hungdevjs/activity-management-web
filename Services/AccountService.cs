@@ -86,6 +86,7 @@ namespace ActivityManagementWeb.Services
 
     public async Task VerifyForgetPasswordRequest(ForgetPasswordConfirmDto model)
     {
+      var now = DateTime.UtcNow;
       var result = _globalService.Verify(model);
       if (!result) throw new Exception("Bad credential");
 
@@ -100,6 +101,7 @@ namespace ActivityManagementWeb.Services
       var salt = BCrypt.Net.BCrypt.GenerateSalt(6);
       var password = BCrypt.Net.BCrypt.HashPassword(model.NewPassword.Trim(), salt);
       student.Password = password;
+      student.UpdatedAt = now;
       await _context.SaveChangesAsync();
     }
   }

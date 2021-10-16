@@ -35,6 +35,7 @@ const Login = () => {
       localStorage.setItem(ACCESS_TOKEN, token)
       setUser(data)
       history.push("/")
+      toast.success("Login successfully!")
     } catch (err) {
       toast.error(err.message)
     }
@@ -52,11 +53,9 @@ const Login = () => {
                 <p className="text-muted">Sign In to your account</p>
                 <InputGroup className="mb-3">
                   <Input
-                    type="text"
-                    placeholder="Username"
+                    placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    required
                   />
                 </InputGroup>
                 <InputGroup className="mb-4">
@@ -68,13 +67,17 @@ const Login = () => {
                   />
                 </InputGroup>
                 <Row>
-                  <Col xs="6">
+                  <Col xs="4">
                     <Button color="primary" className="px-4" onClick={login}>
                       Login
                     </Button>
                   </Col>
-                  <Col xs="6" className="text-right">
-                    <Button color="link" className="px-0">
+                  <Col xs="8" className="text-right">
+                    <Button
+                      color="link"
+                      className="px-0"
+                      onClick={() => history.push("/forget-password")}
+                    >
                       Forgot password?
                     </Button>
                   </Col>
