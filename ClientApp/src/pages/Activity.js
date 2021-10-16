@@ -5,7 +5,10 @@ import { Row, Col, Card, CardHeader, CardBody } from "reactstrap"
 import ActivityList from "../components/ActivityList"
 
 import { AppContext } from "../contexts/app.context"
-import { getActivities } from "../services/activityService"
+import {
+  getActivities,
+  updateStatusActivity,
+} from "../services/activityService"
 
 const Activity = () => {
   const { setLoading } = useContext(AppContext)
@@ -17,6 +20,7 @@ const Activity = () => {
     setLoading(true)
 
     try {
+      await updateStatusActivity()
       const res = await getActivities()
       setActive(res.data?.active)
       setPassed(res.data?.passed)

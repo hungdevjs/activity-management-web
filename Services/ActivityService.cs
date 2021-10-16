@@ -19,6 +19,7 @@ namespace ActivityManagementWeb.Services
     Task AttendanceActivity(int userId, int activityId);
     Task<int> GetScore(int userId);
     Task<SemesterDto> GetSemester();
+    Task UpdateStatusActivity(int userId);
   }
 
   public class ActivityService : IActivityService
@@ -177,46 +178,22 @@ namespace ActivityManagementWeb.Services
 
     public async Task<int> GetScore(int userId)
     {
-      var now = DateTime.UtcNow;
       var semester = await _commonService.GetCurrentSemester();
-      var studentAbsenceActivities = await _context.StudentActivities
-        .Include(i => i.Activity).ThenInclude(i => i.ActivityType)
-        .Where(i => i.Status == Constants.APPROVED && !i.HasScoreChecked && (i.AttendanceTime == null || i.AttendanceTime == DateTime.MinValue) && i.Activity.EndTime < now)
-        .ToListAsync();
-
-      var minusPoint = 0;
-      foreach (var studentAbsenceActivity in studentAbsenceActivities)
-      {
-        minusPoint += studentAbsenceActivity.Activity.ActivityType.MinusPoint;
-        studentAbsenceActivity.HasScoreChecked = true;
-        studentAbsenceActivity.Status = Constants.ABSENCE;
-      }
-
-      var hasChanges = false;
       var studentPoint = await _context.StudentPoints.FirstOrDefaultAsync(i => i.SemesterId == semester.Id && i.StudentId == userId);
-      if (studentPoint == default)
-      {
-        var newStudentPoint = new StudentPoint
+
+      if (studentPoint != default) return studentPoint.Point;
+
+      var newStudentPoint = new StudentPoint
         {
           StudentId = userId,
           SemesterId = semester.Id,
-          Point = Constants.DefaultStudentPoint - minusPoint
+          Point = Constants.DefaultStudentPoint
         };
-        _context.StudentPoints.Add(newStudentPoint);
-        hasChanges = true;
-      }
-      else if (minusPoint > 0)
-      {
-        studentPoint.Point = studentPoint.Point - minusPoint;
-        hasChanges = true;
-      }
 
-      if (hasChanges)
-      {
-        await _context.SaveChangesAsync();
-      }
+      _context.StudentPoints.Add(newStudentPoint);
+      await _context.SaveChangesAsync();
 
-      return studentPoint.Point;
+      return Constants.DefaultStudentPoint;
     }
 
     public async Task<SemesterDto> GetSemester()
@@ -231,13 +208,57 @@ namespace ActivityManagementWeb.Services
       };
     }
 
-    private ActivityDto[] FormatActivity(List<StudentActivity> activities)
+    public async Task UpdateStatusActivity(int userId)
     {
       var now = DateTime.UtcNow;
-      var result = new List<ActivityDto>();
-      foreach (var activity in activities)
+      var semester = await _commonService.GetCurrentSemester();
+      var absenceStudentActivities = await _context.StudentActivities
+        .Include(i => i.Activity).ThenInclude(i => i.ActivityType)
+        .Where(i => i.StudentId == userId && i.Activity.SemesterId == semester.Id && i.Status == Constants.APPROVED && i.Activity.EndTime < now && !i.HasScoreChecked)
+        .ToListAsync();
+
+      var activePendingStudentActivities = await _context.StudentActivities
+        .Include(i => i.Activity).ThenInclude(i => i.ActivityType)
+        .Where(i => i.StudentId == userId && i.Activity.SemesterId == semester.Id && i.Status == Constants.PENDING && i.Activity.StartTime <= now && !i.HasScoreChecked)
+        .ToListAsync();
+
+      foreach (var activity in activePendingStudentActivities)
       {
-        var data = new ActivityDto
+        activity.HasScoreChecked = true;
+        activity.Status = Constants.CANCELLED;
+      }
+
+      var minusPoint = 0;
+      foreach (var studentActivity in absenceStudentActivities)
+      {
+        studentActivity.HasScoreChecked = true;
+        studentActivity.Status = Constants.ABSENCE;
+        minusPoint += studentActivity.Activity.ActivityType.MinusPoint;
+      }
+
+      var studentPoint = await _context.StudentPoints.FirstOrDefaultAsync(i => i.SemesterId == semester.Id && i.StudentId == userId);
+      if (studentPoint == default)
+      {
+        var newStudentPoint = new StudentPoint
+        {
+          StudentId = userId,
+          SemesterId = semester.Id,
+          Point = Constants.DefaultStudentPoint - minusPoint
+        };
+        _context.StudentPoints.Add(newStudentPoint);
+      }
+      else if (minusPoint > 0)
+      {
+        studentPoint.Point = studentPoint.Point - minusPoint;
+      }
+
+      await _context.SaveChangesAsync();
+    }
+
+    private ActivityDto[] FormatActivity(List<StudentActivity> activities)
+    {
+      return activities
+        .Select(activity => new ActivityDto
         {
           Id = activity.ActivityId,
           Name = activity.Activity.Name,
@@ -250,46 +271,10 @@ namespace ActivityManagementWeb.Services
           ActivityTypeName = activity.Activity.ActivityType.Name,
           PlusPoint = activity.Activity.ActivityType.PlusPoint,
           MinusPoint = activity.Activity.ActivityType.MinusPoint,
-          CreatorName = $"{activity.Activity.Creator.FirstName} {activity.Activity.Creator.LastName}"
-        };
-
-        var status = "";
-        if (activity.Status == Constants.CANCELLED || (activity.Status == Constants.PENDING && activity.Activity.StartTime <= now)) 
-        {
-          status = Constants.CANCELLED;
-        } 
-        else if (activity.Status == Constants.PENDING) 
-        {
-          status = Constants.PENDING;
-        } 
-        else if (activity.Status == Constants.ATTENDANCE)
-        {
-          status = Constants.ATTENDANCE;
-        }
-        else
-        {
-          if (now > activity.Activity.EndTime) 
-          {
-            if (activity.AttendanceTime == null || activity.AttendanceTime == DateTime.MinValue)
-            {
-              status = Constants.ABSENCE;
-            } 
-            else
-            {
-              status = Constants.ATTENDANCE;
-            }
-          } 
-          else
-          {
-            status = Constants.APPROVED;
-          }
-        }
-
-        data.Status = status;
-
-        result.Add(data);
-      }
-      return result.ToArray();
+          CreatorName = $"{activity.Activity.Creator.FirstName} {activity.Activity.Creator.LastName}",
+          Status = activity.Status
+        })
+        .ToArray();
     }
   }
 }

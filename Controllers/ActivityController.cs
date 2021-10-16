@@ -40,6 +40,24 @@ namespace ActivityManagementWeb.Controllers
       }
     }
 
+    [HttpPost]
+    public async Task<object> UpdateStatusActivity()
+    {
+      try 
+      {
+        var userId = Utils.GetUserId(HttpContext);
+        if (userId == default) throw new Exception("Bad request");
+
+        await _service.UpdateStatusActivity(userId);
+        return Ok();
+      }
+      catch(Exception ex)
+      {
+        _logger.LogError(ex.Message);
+        return BadRequest(ex.Message);
+      }
+    }
+
     [HttpGet]
     [Route("active")]
     public async Task<object> GetListActiveActivities()

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ActivityManagementWeb.Helpers
+﻿namespace ActivityManagementWeb.Helpers
 {
     public static class Constants
     {

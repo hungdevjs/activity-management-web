@@ -14,6 +14,7 @@ import {
   getActiveActivities,
   signUpActivity,
   attendanceActivity,
+  updateStatusActivity,
 } from "../services/activityService"
 import { getProfile } from "../services/studentService"
 
@@ -28,6 +29,7 @@ const Dashboard = () => {
     setLoading(true)
 
     try {
+      await updateStatusActivity()
       const [semesterRes, scoreRes, activeActivitiesRes, profileRes] =
         await Promise.all([
           getSemester(),
