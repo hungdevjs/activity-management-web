@@ -56,5 +56,37 @@ namespace ActivityManagementWeb.Controllers
             return BadRequest(ex.Message);
           }
         }
+
+        [HttpGet]
+        [Route("forget-password")]
+        public async Task<object> ForgetPasswordRequest(string email)
+        {
+          try 
+          {
+            await _service.ForgetPasswordRequest(email);
+            return Ok();
+          }
+          catch (Exception ex)
+          {
+            _logger.LogError(ex.Message);
+            return BadRequest(ex.Message);
+          }
+        }
+
+        [HttpPost]
+        [Route("verify-forget-password")]
+        public object VerifyForgetPasswordRequest([FromBody] ForgetPasswordConfirmDto model)
+        {
+          try 
+          {
+            _service.VerifyForgetPasswordRequest(model);
+            return Ok();
+          }
+          catch (Exception ex)
+          {
+            _logger.LogError(ex.Message);
+            return BadRequest(ex.Message);
+          }
+        }
     }
 }

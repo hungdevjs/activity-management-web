@@ -39,6 +39,7 @@ namespace ActivityManagementWeb
             });
 
             // add scoped here
+            services.AddSingleton<IGlobalService, GlobalService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IStudentService, StudentService>();
             services.AddScoped<ICommonService, CommonService>();
