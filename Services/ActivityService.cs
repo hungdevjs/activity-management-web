@@ -70,7 +70,7 @@ namespace ActivityManagementWeb.Services
       var activeActivities = await _context.Activities
         .Include(i => i.ActivityType)
         .Include(i => i.Creator)
-        .Where(i => i.SemesterId == semester.Id && now <= i.SignUpEndTime)
+        .Where(i => i.IsApproved && i.SemesterId == semester.Id && now <= i.EndTime)
         .ToListAsync();
 
       var signedActivities = await _context.StudentActivities
@@ -131,7 +131,7 @@ namespace ActivityManagementWeb.Services
       if (existed) throw new Exception("You have already signed up for this activity");
 
       var activity = await _context.Activities
-        .FirstOrDefaultAsync(i => i.Id == activityId && i.SemesterId == semester.Id && i.SignUpStartTime <= now && now <= i.SignUpEndTime);
+        .FirstOrDefaultAsync(i => i.Id == activityId && i.IsApproved && i.SemesterId == semester.Id && i.SignUpStartTime <= now && now <= i.SignUpEndTime);
       if (activity == default) throw new Exception("Activity doesn't exist on current semester or is closed signing up");
 
       var newStudentActivity = new StudentActivity
