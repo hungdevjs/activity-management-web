@@ -19,5 +19,6 @@ namespace ActivityManagementWeb.Models
         public virtual Semester Semester { get; set; }
         public int CreatorId { get; set; }
         public Teacher Creator { get; set; }
+        public string AttendanceCode { get; set; }
     }
 }

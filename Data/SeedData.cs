@@ -97,84 +97,89 @@ namespace ActivityManagementWeb.Data
 
               // create activities
               var activity1 = new Activity
-              {
-                  CreatedAt = now.AddDays(-6),
-                  Name = "Applied mathematics seminar",
-                  Description = "It's all about machine learning and AI for a better future",
-                  StartTime = now.AddDays(-2),
-                  EndTime = now.AddDays(15),
-                  SignUpStartTime = now.AddDays(-4),
-                  SignUpEndTime = now.AddDays(-2),
-                  NumberOfStudents = 100,
-                  IsApproved = true,
-                  ActivityType = activityType1,
-                  Semester = semester1,
-                  Creator = teacher1
-              };
+                {
+                    CreatedAt = now.AddDays(-6),
+                    Name = "Applied mathematics seminar",
+                    Description = "It's all about machine learning and AI for a better future",
+                    StartTime = now.AddDays(-2),
+                    EndTime = now.AddDays(15),
+                    SignUpStartTime = now.AddDays(-4),
+                    SignUpEndTime = now.AddDays(-2),
+                    NumberOfStudents = 100,
+                    IsApproved = true,
+                    ActivityType = activityType1,
+                    Semester = semester1,
+                    Creator = teacher1,
+                    AttendanceCode = "AM01"
+                };
 
-              var activity2 = new Activity
-              {
-                  CreatedAt = now,
-                  Name = "HUST go camping!!!",
-                  Description = "We will have fun in Sapa on November",
-                  StartTime = now.AddDays(30),
-                  EndTime = now.AddDays(35),
-                  SignUpStartTime = now,
-                  SignUpEndTime = now.AddDays(20),
-                  NumberOfStudents = 100,
-                  IsApproved = true,
-                  ActivityType = activityType2,
-                  Semester = semester1,
-                  Creator = teacher2
-              };
+                var activity2 = new Activity
+                {
+                    CreatedAt = now,
+                    Name = "HUST go camping!!!",
+                    Description = "We will have fun in Sapa on November",
+                    StartTime = now.AddDays(30),
+                    EndTime = now.AddDays(35),
+                    SignUpStartTime = now,
+                    SignUpEndTime = now.AddDays(20),
+                    NumberOfStudents = 100,
+                    IsApproved = true,
+                    ActivityType = activityType2,
+                    Semester = semester1,
+                    Creator = teacher2,
+                    AttendanceCode = "CAMP01"
+                };
 
-              var activity3 = new Activity
-              {
-                  CreatedAt = now.AddDays(-5),
-                  Name = "Chemistry seminar",
-                  Description = "It's all about history of chemistry",
-                  StartTime = now.AddDays(-2),
-                  EndTime = now.AddDays(3),
-                  SignUpStartTime = now.AddDays(-4),
-                  SignUpEndTime = now.AddDays(-3),
-                  NumberOfStudents = 100,
-                  IsApproved = true,
-                  ActivityType = activityType2,
-                  Semester = semester1,
-                  Creator = teacher2
-              };
+                var activity3 = new Activity
+                {
+                    CreatedAt = now.AddDays(-5),
+                    Name = "Chemistry seminar",
+                    Description = "It's all about history of chemistry",
+                    StartTime = now.AddDays(-2),
+                    EndTime = now.AddDays(3),
+                    SignUpStartTime = now.AddDays(-4),
+                    SignUpEndTime = now.AddDays(-3),
+                    NumberOfStudents = 100,
+                    IsApproved = true,
+                    ActivityType = activityType2,
+                    Semester = semester1,
+                    Creator = teacher2,
+                    AttendanceCode = "CH01"
+                };
 
-              var activity4 = new Activity
-              {
-                  CreatedAt = now.AddDays(-2),
-                  Name = "Chemistry seminar part II",
-                  Description = "It's all about history of chemistry (part II)",
-                  StartTime = now.AddDays(+10),
-                  EndTime = now.AddDays(+20),
-                  SignUpStartTime = now.AddDays(-1),
-                  SignUpEndTime = now.AddDays(+5),
-                  NumberOfStudents = 100,
-                  IsApproved = true,
-                  ActivityType = activityType2,
-                  Semester = semester1,
-                  Creator = teacher2
-              };
+                var activity4 = new Activity
+                {
+                    CreatedAt = now.AddDays(-2),
+                    Name = "Chemistry seminar part II",
+                    Description = "It's all about history of chemistry (part II)",
+                    StartTime = now.AddDays(+10),
+                    EndTime = now.AddDays(+20),
+                    SignUpStartTime = now.AddDays(-1),
+                    SignUpEndTime = now.AddDays(+5),
+                    NumberOfStudents = 100,
+                    IsApproved = true,
+                    ActivityType = activityType2,
+                    Semester = semester1,
+                    Creator = teacher2,
+                    AttendanceCode = "CH02"
+                };
 
-              var activity5 = new Activity
-              {
-                  CreatedAt = now.AddDays(-20),
-                  Name = "Physical seminar",
-                  Description = "It's all about history of physical",
-                  StartTime = now.AddDays(-10),
-                  EndTime = now.AddDays(-5),
-                  SignUpStartTime = now.AddDays(-15),
-                  SignUpEndTime = now.AddDays(-12),
-                  NumberOfStudents = 100,
-                  IsApproved = true,
-                  ActivityType = activityType2,
-                  Semester = semester1,
-                  Creator = teacher2
-              };
+                var activity5 = new Activity
+                {
+                    CreatedAt = now.AddDays(-20),
+                    Name = "Physical seminar",
+                    Description = "It's all about history of physical",
+                    StartTime = now.AddDays(-10),
+                    EndTime = now.AddDays(-5),
+                    SignUpStartTime = now.AddDays(-15),
+                    SignUpEndTime = now.AddDays(-12),
+                    NumberOfStudents = 100,
+                    IsApproved = true,
+                    ActivityType = activityType2,
+                    Semester = semester1,
+                    Creator = teacher2,
+                    AttendanceCode = "PY01"
+                };
 
               context.Activities.AddRange(activity1, activity2, activity3, activity4, activity5);
 
