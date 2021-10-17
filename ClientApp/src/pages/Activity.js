@@ -11,7 +11,7 @@ import {
 } from "../services/activityService"
 
 const Activity = () => {
-  const { setLoading } = useContext(AppContext)
+  const { semesterId, setLoading } = useContext(AppContext)
   const [active, setActive] = useState([])
   const [passed, setPassed] = useState([])
   const [upcoming, setUpcoming] = useState([])
@@ -21,7 +21,7 @@ const Activity = () => {
 
     try {
       await updateStatusActivity()
-      const res = await getActivities()
+      const res = await getActivities(semesterId)
       setActive(res.data?.active)
       setPassed(res.data?.passed)
       setUpcoming(res.data?.upcoming)
@@ -34,7 +34,7 @@ const Activity = () => {
 
   useEffect(() => {
     getData()
-  }, [])
+  }, [semesterId])
 
   const cols = [
     {

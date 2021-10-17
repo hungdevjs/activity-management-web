@@ -18,7 +18,7 @@ import {
 import { getProfile } from "../services/studentService"
 
 const Dashboard = () => {
-  const { selectedSemester, setLoading } = useContext(AppContext)
+  const { semesterId, selectedSemester, setLoading } = useContext(AppContext)
   const [score, setScore] = useState(null)
   const [activeActivities, setActiveActivities] = useState([])
   const [profile, setProfile] = useState(null)
@@ -30,8 +30,8 @@ const Dashboard = () => {
     try {
       await updateStatusActivity()
       const [scoreRes, activeActivitiesRes, profileRes] = await Promise.all([
-        getScore(),
-        getActiveActivities(),
+        getScore(semesterId),
+        getActiveActivities(semesterId),
         getProfile(),
       ])
 
@@ -47,14 +47,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     getData()
-  }, [])
+  }, [semesterId])
 
   const signUp = async (id) => {
     setLoading(true)
 
     try {
       await signUpActivity(id)
-      const res = await getActiveActivities()
+      const res = await getActiveActivities(semesterId)
       setActiveActivities(res.data)
       toast.success("Signing up successfully!")
     } catch (err) {
@@ -72,8 +72,8 @@ const Dashboard = () => {
         throw new Error("Attendance code is empty")
       await attendanceActivity(id, attendanceCode)
       const [activeActivitiesRes, scoreRes] = await Promise.all([
-        getActiveActivities(),
-        getScore(),
+        getActiveActivities(semesterId),
+        getScore(semesterId),
       ])
       setActiveActivities(activeActivitiesRes.data)
       setScore(scoreRes.data)

@@ -25,14 +25,14 @@ namespace ActivityManagementWeb.Controllers
     }
 
     [HttpGet]
-    public async Task<object> GetListActivity()
+    public async Task<object> GetListActivity(int? semesterId)
     {
       try 
       {
         var userId = Utils.GetUserId(HttpContext);
         if (userId == default) throw new Exception("Bad request");
 
-        var data = await _service.GetListActivity(userId);
+        var data = await _service.GetListActivity(userId, semesterId);
         return Ok(data);
       }
       catch(Exception ex)
@@ -62,14 +62,14 @@ namespace ActivityManagementWeb.Controllers
 
     [HttpGet]
     [Route("active")]
-    public async Task<object> GetListActiveActivities()
+    public async Task<object> GetListActiveActivities(int? semesterId)
     {
       try 
       {
         var userId = Utils.GetUserId(HttpContext);
         if (userId == default) throw new Exception("Bad request");
 
-        var data = await _service.GetListActiveActivities(userId);
+        var data = await _service.GetListActiveActivities(userId, semesterId);
         return Ok(data);
       }
       catch(Exception ex)
@@ -81,14 +81,14 @@ namespace ActivityManagementWeb.Controllers
 
     [HttpGet]
     [Route("score")]
-    public async Task<object> GetScore()
+    public async Task<object> GetScore(int? semesterId)
     {
       try 
       {
         var userId = Utils.GetUserId(HttpContext);
         if (userId == default) throw new Exception("Bad request");
 
-        var data = await _service.GetScore(userId);
+        var data = await _service.GetScore(userId, semesterId);
         return Ok(data);
       }
       catch(Exception ex)

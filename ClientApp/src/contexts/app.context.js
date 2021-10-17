@@ -19,6 +19,7 @@ const AppContextProvider = ({ children }) => {
         loading,
         user,
         semesters,
+        semesterId,
         selectedSemester,
         setLoading,
         setUser,

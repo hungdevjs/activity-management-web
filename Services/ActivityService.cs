@@ -13,11 +13,11 @@ namespace ActivityManagementWeb.Services
 {
   public interface IActivityService
   {
-    Task<StudentListActivityDto> GetListActivity(int userId);
-    Task<List<ActivityDto>> GetListActiveActivities(int userId);
+    Task<StudentListActivityDto> GetListActivity(int userId, int? semesterId);
+    Task<List<ActivityDto>> GetListActiveActivities(int userId, int? semesterId);
     Task SignUpActivity(int userId, int activityId);
     Task AttendanceActivity(int userId, int activityId, string attendanceCode);
-    Task<int> GetScore(int userId);
+    Task<int> GetScore(int userId, int? semesterId);
     Task UpdateStatusActivity(int userId);
   }
 
@@ -31,13 +31,17 @@ namespace ActivityManagementWeb.Services
       _commonService = commonService;
     }
 
-    public async Task<StudentListActivityDto> GetListActivity(int userId)
+    public async Task<StudentListActivityDto> GetListActivity(int userId, int? semesterId)
     {
       var semester = await _commonService.GetCurrentSemester();
+      if (semesterId == null || semesterId == 0)
+      {
+        semesterId = semester.Id;
+      }
       var activities = await _context.StudentActivities
         .Include(i => i.Activity).ThenInclude(i => i.ActivityType)
         .Include(i => i.Activity).ThenInclude(i => i.Creator)
-        .Where(i => i.StudentId == userId && i.Activity.SemesterId == semester.Id)
+        .Where(i => i.StudentId == userId && i.Activity.SemesterId == semesterId)
         .ToListAsync();
 
       var now = DateTime.UtcNow;
@@ -61,19 +65,24 @@ namespace ActivityManagementWeb.Services
       };
     }
 
-    public async Task<List<ActivityDto>> GetListActiveActivities(int userId)
+    public async Task<List<ActivityDto>> GetListActiveActivities(int userId, int? semesterId)
     {
       var now = DateTime.UtcNow;
       var semester = await _commonService.GetCurrentSemester();
 
+      if (semesterId == null || semesterId == 0)
+      {
+        semesterId = semester.Id;
+      }
+
       var activeActivities = await _context.Activities
         .Include(i => i.ActivityType)
         .Include(i => i.Creator)
-        .Where(i => i.IsApproved && i.SemesterId == semester.Id && now <= i.EndTime)
+        .Where(i => i.IsApproved && i.SemesterId == semesterId && now <= i.EndTime)
         .ToListAsync();
 
       var signedActivities = await _context.StudentActivities
-        .Where(i => i.StudentId == userId && i.Activity.SemesterId == semester.Id)
+        .Where(i => i.StudentId == userId && i.Activity.SemesterId == semesterId)
         .ToListAsync();
 
       var signedActivitiyIds = signedActivities.Select(i => i.ActivityId).ToList();
@@ -175,17 +184,21 @@ namespace ActivityManagementWeb.Services
       await _context.SaveChangesAsync();
     }
 
-    public async Task<int> GetScore(int userId)
+    public async Task<int> GetScore(int userId, int? semesterId)
     {
       var semester = await _commonService.GetCurrentSemester();
-      var studentPoint = await _context.StudentPoints.FirstOrDefaultAsync(i => i.SemesterId == semester.Id && i.StudentId == userId);
+      if (semesterId == null || semesterId == 0)
+      {
+        semesterId = semester.Id;
+      }
+      var studentPoint = await _context.StudentPoints.FirstOrDefaultAsync(i => i.SemesterId == semesterId && i.StudentId == userId);
 
       if (studentPoint != default) return studentPoint.Point;
 
       var newStudentPoint = new StudentPoint
         {
           StudentId = userId,
-          SemesterId = semester.Id,
+          SemesterId = (int)semesterId,
           Point = Constants.DefaultStudentPoint
         };
 
