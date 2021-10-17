@@ -13,6 +13,6 @@ export const attendanceActivity = (id, attendanceCode) =>
 
 export const getScore = () => api.get(`${ACTIVITY_URL}/score`)
 
-export const getSemester = () => api.get(`${ACTIVITY_URL}/semester`)
+export const getAllSemesters = () => api.get(`${ACTIVITY_URL}/semesters`)
 
 export const updateStatusActivity = () => api.post(ACTIVITY_URL)

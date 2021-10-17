@@ -12,6 +12,7 @@ import {
 import { MdLogout } from "react-icons/md"
 import { Link, useHistory } from "react-router-dom"
 
+import SemesterSelector from "../components/SemesterSelector"
 import { AppContext } from "../contexts/app.context"
 import { ACCESS_TOKEN } from "../utils/constants"
 
@@ -38,6 +39,7 @@ const Header = () => {
           <NavbarBrand tag={Link} to="/">
             {user?.name}
           </NavbarBrand>
+          <SemesterSelector />
           <NavbarToggler onClick={toggleNavbar} className="mr-2" />
           <Collapse
             className="d-sm-inline-flex flex-sm-row-reverse"

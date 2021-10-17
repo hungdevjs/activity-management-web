@@ -9,7 +9,6 @@ import ActiveActivities from "../components/ActiveActivities"
 
 import { AppContext } from "../contexts/app.context"
 import {
-  getSemester,
   getScore,
   getActiveActivities,
   signUpActivity,
@@ -19,8 +18,7 @@ import {
 import { getProfile } from "../services/studentService"
 
 const Dashboard = () => {
-  const { setLoading } = useContext(AppContext)
-  const [semester, setSemester] = useState(null)
+  const { selectedSemester, setLoading } = useContext(AppContext)
   const [score, setScore] = useState(null)
   const [activeActivities, setActiveActivities] = useState([])
   const [profile, setProfile] = useState(null)
@@ -31,15 +29,12 @@ const Dashboard = () => {
 
     try {
       await updateStatusActivity()
-      const [semesterRes, scoreRes, activeActivitiesRes, profileRes] =
-        await Promise.all([
-          getSemester(),
-          getScore(),
-          getActiveActivities(),
-          getProfile(),
-        ])
+      const [scoreRes, activeActivitiesRes, profileRes] = await Promise.all([
+        getScore(),
+        getActiveActivities(),
+        getProfile(),
+      ])
 
-      setSemester(semesterRes.data)
       setScore(scoreRes.data)
       setActiveActivities(activeActivitiesRes.data)
       setProfile(profileRes.data)
@@ -94,7 +89,7 @@ const Dashboard = () => {
   return (
     <Row>
       <Col md={4}>
-        <Semester semester={semester} />
+        <Semester semester={selectedSemester} />
         <Profile profile={profile} />
       </Col>
       <Col md={8}>

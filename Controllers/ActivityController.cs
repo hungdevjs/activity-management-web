@@ -15,11 +15,13 @@ namespace ActivityManagementWeb.Controllers
   {
     private readonly ILogger<ActivityController> _logger;
     private readonly IActivityService _service;
+    private readonly ICommonService _commonService;
 
-    public ActivityController(ILogger<ActivityController> logger, IActivityService service)
+    public ActivityController(ILogger<ActivityController> logger, IActivityService service, ICommonService commonService)
     {
       _logger = logger;
       _service = service;
+      _commonService = commonService;
     }
 
     [HttpGet]
@@ -97,12 +99,12 @@ namespace ActivityManagementWeb.Controllers
     }
 
     [HttpGet]
-    [Route("semester")]
-    public async Task<object> GetSemester()
+    [Route("semesters")]
+    public async Task<object> GetSemesters()
     {
       try 
       {
-        var data = await _service.GetSemester();
+        var data = await _commonService.GetAllSemesters();
         return Ok(data);
       }
       catch(Exception ex)

@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SendGrid;
@@ -7,12 +9,14 @@ using SendGrid.Helpers.Mail;
 
 using ActivityManagementWeb.Data;
 using ActivityManagementWeb.Models;
+using ActivityManagementWeb.Dtos;
 
 namespace ActivityManagementWeb.Services
 {
   public interface ICommonService
   {
     Task<Semester> GetCurrentSemester();
+    Task<List<SemesterDto>> GetAllSemesters();
     Task SendEmailForgetPassword(string email, string code);
   }
 
@@ -35,6 +39,23 @@ namespace ActivityManagementWeb.Services
       if (semester == null) throw new Exception("Semester doesn't exist");
 
       return semester;
+    }
+
+    public async Task<List<SemesterDto>> GetAllSemesters()
+    {
+      var semesters = await _context.Semesters
+        .Include(i => i.Year)
+        .Select(i => new SemesterDto
+        {
+          Id = i.Id,
+          Name = i.Name,
+          StartTime = i.StartTime,
+          EndTime = i.EndTime,
+          YearName = i.Year.Name
+        })
+        .ToListAsync();
+
+      return semesters;
     }
 
     private async Task SendEmail(string receiverEmail, string subject, string txtBody, string htmlBody)

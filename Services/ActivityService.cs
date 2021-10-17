@@ -18,7 +18,6 @@ namespace ActivityManagementWeb.Services
     Task SignUpActivity(int userId, int activityId);
     Task AttendanceActivity(int userId, int activityId, string attendanceCode);
     Task<int> GetScore(int userId);
-    Task<SemesterDto> GetSemester();
     Task UpdateStatusActivity(int userId);
   }
 
@@ -194,18 +193,6 @@ namespace ActivityManagementWeb.Services
       await _context.SaveChangesAsync();
 
       return Constants.DefaultStudentPoint;
-    }
-
-    public async Task<SemesterDto> GetSemester()
-    {
-      var semester = await _commonService.GetCurrentSemester();
-      return new SemesterDto
-      {
-        Name = semester.Name,
-        StartTime = semester.StartTime,
-        EndTime = semester.EndTime,
-        YearName = semester.Year.Name
-      };
     }
 
     public async Task UpdateStatusActivity(int userId)
