@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { ListGroup, ListGroupItem, Collapse, Button } from "reactstrap"
+import { ListGroup, ListGroupItem, Collapse, Button, Input } from "reactstrap"
 import { BiRightArrow, BiDownArrow } from "react-icons/bi"
 import moment from "moment"
 
@@ -28,7 +28,14 @@ const generateText = (activity) => {
   }
 }
 
-const ActivityList = ({ activities, isList, signUp, attendance }) => {
+const ActivityList = ({
+  activities,
+  isList,
+  signUp,
+  attendance,
+  attendanceCode,
+  setAttendanceCode,
+}) => {
   const [openingIds, setOpeningIds] = useState([])
 
   const toggle = (id) => {
@@ -63,14 +70,17 @@ const ActivityList = ({ activities, isList, signUp, attendance }) => {
           </p>
         )
       return (
-        <Button
-          color="success"
-          className="mt-2"
-          size="sm"
-          onClick={() => attendance(activity.id)}
-        >
-          Attendance
-        </Button>
+        <div className="mt-2 d-flex align-items-center">
+          <Input
+            className="mr-2"
+            placeholder="Attendance code"
+            value={attendanceCode}
+            onChange={(e) => setAttendanceCode(e.target.value)}
+          />
+          <Button color="success" onClick={() => attendance(activity.id)}>
+            Attendance
+          </Button>
+        </div>
       )
     }
 

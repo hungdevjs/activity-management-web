@@ -37,7 +37,7 @@ const Login = () => {
       history.push("/")
       toast.success("Login successfully!")
     } catch (err) {
-      toast.error(err.message)
+      toast.error(err.response?.data || err.message)
     }
     setLoading(false)
   }

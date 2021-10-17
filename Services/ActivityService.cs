@@ -16,7 +16,7 @@ namespace ActivityManagementWeb.Services
     Task<StudentListActivityDto> GetListActivity(int userId);
     Task<List<ActivityDto>> GetListActiveActivities(int userId);
     Task SignUpActivity(int userId, int activityId);
-    Task AttendanceActivity(int userId, int activityId);
+    Task AttendanceActivity(int userId, int activityId, string attendanceCode);
     Task<int> GetScore(int userId);
     Task<SemesterDto> GetSemester();
     Task UpdateStatusActivity(int userId);
@@ -146,13 +146,13 @@ namespace ActivityManagementWeb.Services
       await _context.SaveChangesAsync();
     }
 
-    public async Task AttendanceActivity(int userId, int activityId)
+    public async Task AttendanceActivity(int userId, int activityId, string attendanceCode)
     {
       var now = DateTime.UtcNow;
       var semester = await _commonService.GetCurrentSemester();
       var studentActivity = await _context.StudentActivities
         .Include(i => i.Activity).ThenInclude(i => i.ActivityType)
-        .FirstOrDefaultAsync(i => i.StudentId == userId && i.ActivityId == activityId && i.Status == Constants.APPROVED && i.Activity.StartTime <= now && now <= i.Activity.EndTime);
+        .FirstOrDefaultAsync(i => i.StudentId == userId && i.ActivityId == activityId && i.Status == Constants.APPROVED && i.Activity.AttendanceCode == attendanceCode && i.Activity.StartTime <= now && now <= i.Activity.EndTime);
       if (studentActivity == default) throw new Exception("Activity doesn't exist or closed attendancing");
 
       studentActivity.AttendanceTime = now;

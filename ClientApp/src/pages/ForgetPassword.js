@@ -31,7 +31,7 @@ const ForgetPassword = () => {
       history.push(`/verify-forget-password`, { email })
       toast.success("Please check your email to get security code!")
     } catch (err) {
-      toast.error(err.message)
+      toast.error(err.response?.data || err.message)
     }
     setLoading(false)
   }

@@ -133,14 +133,14 @@ namespace ActivityManagementWeb.Controllers
 
     [HttpPut]
     [Route("{activityId}")]
-    public async Task<object> AttendanceActivity(int activityId)
+    public async Task<object> AttendanceActivity(int activityId, string attendanceCode)
     {
       try 
       {
         var userId = Utils.GetUserId(HttpContext);
         if (userId == default) throw new Exception("Bad request");
 
-        await _service.AttendanceActivity(userId, activityId);
+        await _service.AttendanceActivity(userId, activityId, attendanceCode);
         return Ok();
       }
       catch(Exception ex)

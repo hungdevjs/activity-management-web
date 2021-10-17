@@ -24,6 +24,7 @@ const Dashboard = () => {
   const [score, setScore] = useState(null)
   const [activeActivities, setActiveActivities] = useState([])
   const [profile, setProfile] = useState(null)
+  const [attendanceCode, setAttendanceCode] = useState("")
 
   const getData = async () => {
     setLoading(true)
@@ -43,7 +44,7 @@ const Dashboard = () => {
       setActiveActivities(activeActivitiesRes.data)
       setProfile(profileRes.data)
     } catch (err) {
-      toast.error(err.message)
+      toast.error(err.response?.data || err.message)
     }
 
     setLoading(false)
@@ -62,7 +63,7 @@ const Dashboard = () => {
       setActiveActivities(res.data)
       toast.success("Signing up successfully!")
     } catch (err) {
-      toast.error(err.message)
+      toast.error(err.response?.data || err.message)
     }
 
     setLoading(false)
@@ -72,16 +73,19 @@ const Dashboard = () => {
     setLoading(true)
 
     try {
-      await attendanceActivity(id)
+      if (!attendanceCode || !attendanceCode.trim())
+        throw new Error("Attendance code is empty")
+      await attendanceActivity(id, attendanceCode)
       const [activeActivitiesRes, scoreRes] = await Promise.all([
         getActiveActivities(),
         getScore(),
       ])
       setActiveActivities(activeActivitiesRes.data)
       setScore(scoreRes.data)
+      setAttendanceCode("")
       toast.success("Attendance successfully!")
     } catch (err) {
-      toast.error(err.message)
+      toast.error(err.response?.data || err.message)
     }
 
     setLoading(false)
@@ -99,6 +103,8 @@ const Dashboard = () => {
           activeActivities={activeActivities}
           signUp={signUp}
           attendance={attendance}
+          attendanceCode={attendanceCode}
+          setAttendanceCode={setAttendanceCode}
         />
       </Col>
     </Row>

@@ -45,7 +45,7 @@ const VerifyForgetPassword = () => {
       history.push("/login")
       toast.success("Reset password successfully!")
     } catch (err) {
-      toast.error(err.message)
+      toast.error(err.response?.data || err.message)
     }
     setLoading(false)
   }

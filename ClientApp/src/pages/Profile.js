@@ -56,7 +56,7 @@ const Profile = () => {
       const res = await getProfile()
       setProfile(res.data)
     } catch (err) {
-      toast.error(err.message)
+      toast.error(err.response?.data || err.message)
     }
 
     setLoading(false)
@@ -91,7 +91,7 @@ const Profile = () => {
       setUser(res.data)
       toast.success("Update profile successfully")
     } catch (err) {
-      toast.error(err.message)
+      toast.error(err.response?.data || err.message)
     }
 
     setLoading(false)

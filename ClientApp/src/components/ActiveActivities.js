@@ -3,7 +3,13 @@ import { Card, CardHeader, CardBody } from "reactstrap"
 
 import ActivityList from "./ActivityList"
 
-const ActiveActivities = ({ activeActivities, signUp, attendance }) => {
+const ActiveActivities = ({
+  activeActivities,
+  signUp,
+  attendance,
+  attendanceCode,
+  setAttendanceCode,
+}) => {
   if (!activeActivities) return null
 
   return (
@@ -15,6 +21,8 @@ const ActiveActivities = ({ activeActivities, signUp, attendance }) => {
             activities={activeActivities}
             signUp={signUp}
             attendance={attendance}
+            attendanceCode={attendanceCode}
+            setAttendanceCode={setAttendanceCode}
           />
         ) : (
           <p className="mb-0 text-center">No active activity.</p>
