@@ -86,7 +86,7 @@ namespace ActivityManagementWeb.Services
 
     public async Task VerifyForgetPasswordRequest(ForgetPasswordConfirmDto model)
     {
-      var now = DateTime.UtcNow;
+      var now = DateTime.Now;
       var result = _globalService.Verify(model);
       if (!result) throw new Exception("Bad credential");
 

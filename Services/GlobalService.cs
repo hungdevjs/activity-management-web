@@ -29,7 +29,7 @@ namespace ActivityManagementWeb.Services
       var newRequest = new ForgetPasswordRequestDto
       {
         Email = email,
-        Time = DateTime.UtcNow,
+        Time = DateTime.Now,
         Code = code
       };
       forgetPasswordRequests.Add(newRequest);
@@ -50,7 +50,7 @@ namespace ActivityManagementWeb.Services
 
     private void RemoveExpireRequest()
     {
-      var now = DateTime.UtcNow;
+      var now = DateTime.Now;
       forgetPasswordRequests = forgetPasswordRequests
         .Where(i => (now - i.Time).TotalMinutes < 15)
         .ToList();

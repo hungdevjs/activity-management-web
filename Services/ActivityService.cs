@@ -44,7 +44,7 @@ namespace ActivityManagementWeb.Services
         .Where(i => i.StudentId == userId && i.Activity.SemesterId == semesterId)
         .ToListAsync();
 
-      var now = DateTime.UtcNow;
+      var now = DateTime.Now;
       var passed = activities
         .Where(i => i.Activity.EndTime < now)
         .ToList();
@@ -67,7 +67,7 @@ namespace ActivityManagementWeb.Services
 
     public async Task<List<ActivityDto>> GetListActiveActivities(int userId, int? semesterId)
     {
-      var now = DateTime.UtcNow;
+      var now = DateTime.Now;
       var semester = await _commonService.GetCurrentSemester();
 
       if (semesterId == null || semesterId == 0)
@@ -133,7 +133,7 @@ namespace ActivityManagementWeb.Services
 
     public async Task SignUpActivity(int userId, int activityId)
     {
-      var now = DateTime.UtcNow;
+      var now = DateTime.Now;
       var semester = await _commonService.GetCurrentSemester();
       var existed = await _context.StudentActivities.AnyAsync(i => i.StudentId == userId && i.ActivityId == activityId);
       if (existed) throw new Exception("You have already signed up for this activity");
@@ -156,7 +156,7 @@ namespace ActivityManagementWeb.Services
 
     public async Task AttendanceActivity(int userId, int activityId, string attendanceCode)
     {
-      var now = DateTime.UtcNow;
+      var now = DateTime.Now;
       var semester = await _commonService.GetCurrentSemester();
       var studentActivity = await _context.StudentActivities
         .Include(i => i.Activity).ThenInclude(i => i.ActivityType)
@@ -210,7 +210,7 @@ namespace ActivityManagementWeb.Services
 
     public async Task UpdateStatusActivity(int userId)
     {
-      var now = DateTime.UtcNow;
+      var now = DateTime.Now;
       var semester = await _commonService.GetCurrentSemester();
       var absenceStudentActivities = await _context.StudentActivities
         .Include(i => i.Activity).ThenInclude(i => i.ActivityType)

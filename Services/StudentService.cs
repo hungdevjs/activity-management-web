@@ -55,7 +55,7 @@ namespace ActivityManagementWeb.Services
       student.LastName = model.LastName;
       student.PhoneNumber = model.PhoneNumber;
       student.Address = model.Address;
-      student.UpdatedAt = DateTime.UtcNow;
+      student.UpdatedAt = DateTime.Now;
       await _context.SaveChangesAsync();
 
       return new StudentDto

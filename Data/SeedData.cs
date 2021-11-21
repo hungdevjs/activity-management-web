@@ -9,7 +9,7 @@ namespace ActivityManagementWeb.Data
     {
       public static void Initialize(ApplicationDbContext context)
       {
-          var now = DateTime.UtcNow;
+          var now = DateTime.Now;
           var salt = BCrypt.Net.BCrypt.GenerateSalt(6);
           var password = BCrypt.Net.BCrypt.HashPassword(Constants.DefaultPassword, salt);
 

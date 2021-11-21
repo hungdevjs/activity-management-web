@@ -32,7 +32,7 @@ namespace ActivityManagementWeb.Services
 
     public async Task<Semester> GetCurrentSemester()
     {
-      var now = DateTime.UtcNow;
+      var now = DateTime.Now;
       var semester = await _context.Semesters
         .Include(i => i.Year)
         .FirstOrDefaultAsync(i => i.StartTime <= now && now <= i.EndTime);
